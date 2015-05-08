@@ -179,18 +179,18 @@ def parse_pajek(lines):
                 except AttributeError:
                     splitline = shlex.split(str(l))
                 id,label=splitline[0:2]
-                G.add_node(label)
+                G.add_node(id)
                 nodelabels[id]=label
-                G.node[label]={'id':id}
+                G.node[id]={'label':label}
                 try:
                     x,y,shape=splitline[2:5]
-                    G.node[label].update({'x':float(x),
+                    G.node[id].update({'x':float(x),
                                           'y':float(y),
                                           'shape':shape})
                 except:
                     pass
                 extra_attr=zip(splitline[5::2],splitline[6::2])
-                G.node[label].update(extra_attr)
+                G.node[id].update(extra_attr)
         elif l.lower().startswith("*edges") or l.lower().startswith("*arcs"):
             if l.lower().startswith("*edge"):
                # switch from multidigraph to multigraph
@@ -208,8 +208,11 @@ def parse_pajek(lines):
                 if len(splitline)<2:
                     continue
                 ui,vi=splitline[0:2]
-                u=nodelabels.get(ui,ui)
-                v=nodelabels.get(vi,vi)
+                u = ui
+                v = vi
+                #u=nodelabels.get(ui,ui)
+                #v=nodelabels.get(vi,vi)
+                
                 # parse the data attached to this edge and put in a dictionary
                 edge_data={}
                 try:
