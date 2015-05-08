@@ -191,6 +191,13 @@ def parse_pajek(lines):
                     pass
                 extra_attr=zip(splitline[5::2],splitline[6::2])
                 G.node[id].update(extra_attr)
+                
+                try:
+                    extra_attr = zip(['color'], [splitline[-3]])
+                    G.node[id].update(extra_attr)
+                except:
+                    pass
+
         elif l.lower().startswith("*edges") or l.lower().startswith("*arcs"):
             if l.lower().startswith("*edge"):
                # switch from multidigraph to multigraph
