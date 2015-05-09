@@ -1,6 +1,6 @@
 
-var w = 400,
-    h = 400,
+var w = 1920,
+    h = 1080,
     fill = d3.scale.category20();
 
 var vis = d3.select("#chart")
@@ -10,7 +10,7 @@ var vis = d3.select("#chart")
 
 d3.json("force.json", function(json) {
   var force = d3.layout.force()
-      .charge(-120)
+      .charge(-60)
       .linkDistance(30)
       .nodes(json.nodes)
       .links(json.links)
@@ -33,8 +33,8 @@ d3.json("force.json", function(json) {
       .attr("class", "node")
       .attr("cx", function(d) { return d.x; })
       .attr("cy", function(d) { return d.y; })
-      .attr("r", 5)
-      .style("fill", function(d) { return fill(d.group); })
+      .attr("r", function(d) {return d.size; })
+      .style("fill", function(d) { return fill(d.label); })
       .call(force.drag);
 
   node.append("svg:title")
@@ -53,5 +53,29 @@ d3.json("force.json", function(json) {
 
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
-  });
+  });    
+  
+  //Legend
+  var legend = svg.selectAll(".legend")
+      .data(fill.domain())
+      .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function (d, i) {
+          return "translate(0," + i * 20 + ")";
+    });
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", fill);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .style("text-anchor", "end")
+      .text(function (d) {return d;
+    });
+
 });
